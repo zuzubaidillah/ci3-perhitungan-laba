@@ -72,9 +72,10 @@ class Berita extends CI_Controller
 		// cek judul
 		// judul jadikan url slug
 		$slug = url_title($judul, 'dash', true);
+		$formatJudul = str_replace('-', ' ', $slug);
 
 		// cek judul yang sudah ada sesuai judul
-		$cek = $this->Mberita->cekJudul($judul);
+		$cek = $this->Mberita->cekJudul($formatJudul);
 		if (count($cek) >= 1) {
 			// membuat notifikasi sementara
 			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Judul: $judul sudah digunakan','error')</script>");
@@ -86,9 +87,43 @@ class Berita extends CI_Controller
 		$id = "BER" . mt_rand(10000000000000000, 99999999999999999);
 		$hasil = $this->proses_upload_gambar($id);
 
-		echo "<pre>";
-		var_dump($hasil);
-		die();
+		// cek apakah lolos upload
+		if (!$hasil[0]) {
+			// membuat notifikasi sementara
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','" . $hasil[1] . "','error')</script>");
+			redirect('admin/berita/add');
+			exit();
+		}
+
+		$session_id_user = $this->session->userdata('session_id');
+
+		$dataSimpan = [
+			"id_berita" => $id,
+			"gambar" => $hasil[1],
+			"judul" => $judul,
+			"tanggal" => $tanggal,
+			"deskripsi_singkat" => $deskripsi_singkat,
+			"isi" => $isi,
+			"dilihat" => 0,
+			"tag" => $tags,
+		];
+		$dataBintang = [
+			"tgl_buat" => date('Y-m-d H:i:s'),
+			"tgl_update" => "0000-00-00 00:00:00",
+			"id_buat" => $session_id_user,
+			"id_update" => "",
+		];
+		$gabungArray = array_merge($dataSimpan, $dataBintang);
+
+		if ($this->Musers->add('tabel_berita', $gabungArray)) {
+			// membuat notifikasi sementara
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Berhasil','Tambah Data Berhasil disimpan','success')</script>");
+			redirect('admin/berita');
+			exit();
+		}
+		// membuat notifikasi sementara
+		$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Gagal','Proses Lambat! Ulangi lagi','error')</script>");
+		redirect('admin/berita/add');
 	}
 
 	private function proses_upload_gambar($file_name)
