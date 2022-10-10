@@ -127,10 +127,6 @@ class Berita extends CI_Controller
 
 	private function proses_upload_gambar($id, $jenis)
 	{
-		if ($jenis == 'update') {
-			// gambar lama akan di lakukan hapus dulu
-			array_map('unlink', glob(FCPATH . "/upload/berita/$id.*"));
-		}
 
 		$config['upload_path']          = FCPATH . '/upload/berita/';
 		$config['allowed_types']        = 'jpg|jpeg|png';
@@ -140,16 +136,28 @@ class Berita extends CI_Controller
 
 		$this->load->library('upload', $config);
 
+		// cek file yang diupload
+		$this->upload->initialize($config);
+		if (!$this->upload->do_upload('gambar')) {
+			// jika gagal
+			$data = $this->upload->display_errors();
+			return [false, $data];
+		}
+
+		if ($jenis == 'update') {
+			// gambar lama akan di lakukan hapus dulu
+			array_map('unlink', glob(FCPATH . "/upload/berita/$id.*"));
+		}
+
 		// proses uploadnya
 		if ($this->upload->do_upload('gambar')) {
 			// jika berhasil
 			$uploaded_data = $this->upload->data(); // get data yang sudah diupload filenya
+			// echo "<pre>";
+			// var_dump($uploaded_data);
+			// die();
 			// $uploaded_data['file_name'] itu digunakan untuk mengambil nilai nama gambarnya
 			return [true, $uploaded_data['file_name']];
-		} else {
-			// jika gagal
-			$data = $this->upload->display_errors();
-			return [false, $data];
 		}
 	}
 
@@ -190,6 +198,13 @@ class Berita extends CI_Controller
 		if ($_FILES['gambar']['name'] != '') {
 			// ketika gambar di isi
 			$hasilGambar = $this->proses_upload_gambar($id_berita, 'update');
+			// cek apakah lolos upload
+			if (!$hasilGambar[0]) {
+				// membuat notifikasi sementara
+				$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','" . $hasilGambar[1] . "','error')</script>");
+				redirect('admin/berita/update/' . $id_berita);
+				exit();
+			}
 			$dataSimpan['gambar'] = $hasilGambar[1];
 		}
 
