@@ -11,9 +11,13 @@ class Mberita extends CI_Model
         return $querySql->result_array();
     }
 
-    public function cekJudul($judul)
+    public function cekJudul($judul, $id_berita = '')
     {
-        $sql = "SELECT * FROM tabel_berita WHERE judul='$judul'";
+        if ($id_berita == '') {
+            $sql = "SELECT * FROM tabel_berita WHERE judul='$judul'";
+        } else {
+            $sql = "SELECT * FROM tabel_berita WHERE judul = '$judul' AND id_berita != '$id_berita'";
+        }
         $querySql = $this->db->query($sql);
 
         return $querySql->result_array();

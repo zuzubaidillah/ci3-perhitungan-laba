@@ -70,7 +70,7 @@ class Berita extends CI_Controller
 
 		// cek judul
 		// judul jadikan url slug
-		$slug = url_title($judul, 'dash', true);
+		$slug = url_title($judul, 'dash');
 		$formatJudul = str_replace('-', ' ', $slug);
 
 		// cek judul yang sudah ada sesuai judul
@@ -84,7 +84,7 @@ class Berita extends CI_Controller
 
 		// upload gambar
 		$id = "BER" . mt_rand(10000000000000000, 99999999999999999);
-		$hasil = $this->proses_upload_gambar($id);
+		$hasil = $this->proses_upload_gambar($id, 'create');
 
 		// cek apakah lolos upload
 		if (!$hasil[0]) {
@@ -99,7 +99,7 @@ class Berita extends CI_Controller
 		$dataSimpan = [
 			"id_berita" => $id,
 			"gambar" => $hasil[1],
-			"judul" => $judul,
+			"judul" => $formatJudul,
 			"tanggal" => $tanggal,
 			"deskripsi_singkat" => $deskripsi_singkat,
 			"isi" => $isi,
@@ -125,11 +125,16 @@ class Berita extends CI_Controller
 		redirect('admin/berita/add');
 	}
 
-	private function proses_upload_gambar($file_name)
+	private function proses_upload_gambar($id, $jenis)
 	{
+		if ($jenis == 'update') {
+			// gambar lama akan di lakukan hapus dulu
+			array_map('unlink', glob(FCPATH . "/upload/berita/$id.*"));
+		}
+
 		$config['upload_path']          = FCPATH . '/upload/berita/';
 		$config['allowed_types']        = 'jpg|jpeg|png';
-		$config['file_name']            = $file_name;
+		$config['file_name']            = $id;
 		$config['overwrite']            = true; // ketika ada file dengan nama sama maka akan dilakukan replace ditindihi
 		$config['max_size']             = 2024; // 2MB
 
@@ -150,68 +155,66 @@ class Berita extends CI_Controller
 
 	public function proses_update()
 	{
-		// menerima inputan dari bagian view
-		$id = htmlspecialchars($this->input->post('id'), ENT_QUOTES);
-		$namaDepan = htmlspecialchars($this->input->post('nd'), ENT_QUOTES);
-		$namaBelakang = htmlspecialchars($this->input->post('nb'), ENT_QUOTES);
-		$u = htmlspecialchars($this->input->post('u'), ENT_QUOTES);
-		$l = htmlspecialchars($this->input->post('level'), ENT_QUOTES);
+		// menerima request dari client
+		$id_berita = htmlspecialchars($this->input->post('id_berita'), ENT_QUOTES);
+		$tanggal = htmlspecialchars($this->input->post('tanggal'), ENT_QUOTES);
+		$judul = htmlspecialchars($this->input->post('judul'), ENT_QUOTES);
+		$tags = htmlspecialchars($this->input->post('tags'), ENT_QUOTES);
+		$deskripsi_singkat = htmlspecialchars($this->input->post('deskripsi_singkat'), ENT_QUOTES);
+		$isi = $this->input->post('isi');
 
-		// cek username tidak boleh sama
-		$cek = $this->Musers->cekUsername($u, $id);
+		// cek judul
+		// judul jadikan url slug
+		$slug = url_title($judul, 'dash', true);
+		$formatJudul = str_replace('-', ' ', $slug);
+
+		// cek judul yang sudah ada sesuai judul
+		$cek = $this->Mberita->cekJudul($formatJudul, $id_berita);
 		if (count($cek) >= 1) {
 			// membuat notifikasi sementara
-			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Username sudah digunakan','error')</script>");
-			redirect('admin/users/update/' . $id);
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Judul: $judul sudah digunakan','error')</script>");
+			redirect('admin/berita/update/' . $id_berita);
 			exit();
 		}
 
-		// lolos dari pengecekan username
+		// data yang akan di update
+		$dataSimpan = [
+			"judul" => $formatJudul,
+			"tanggal" => $tanggal,
+			"deskripsi_singkat" => $deskripsi_singkat,
+			"isi" => $isi,
+			"tag" => $tags,
+		];
+
+		// cek apakah ganti gambar juga
+		if ($_FILES['gambar']['name'] != '') {
+			// ketika gambar di isi
+			$hasilGambar = $this->proses_upload_gambar($id_berita, 'update');
+			$dataSimpan['gambar'] = $hasilGambar[1];
+		}
+
+		// eckripsi password
 		$session_id_user = $this->session->userdata('session_id');
 
-		$dataSimpan = [
-			"nama_depan" => $namaDepan,
-			"nama_belakang" => $namaBelakang,
-			"username" => $u,
-			"level" => $l,
-		];
 		$dataBintang = [
 			"tgl_update" => date('Y-m-d H:i:s'),
 			"id_update" => $session_id_user,
 		];
-
 		$gabungArray = array_merge($dataSimpan, $dataBintang);
 
-		if ($this->Musers->update('tabel_user', $gabungArray, 'id_user', $id)) {
+		if ($this->Musers->update('tabel_berita', $gabungArray, 'id_berita', $id_berita)) {
 			// membuat notifikasi sementara
-			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Berhasil','Edit Data Berhasil disimpan','success')</script>");
-			redirect('admin/users');
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Berhasil','Update Data Berhasil disimpan','success')</script>");
+			redirect('admin/berita');
 			exit();
 		}
+
 		// membuat notifikasi sementara
 		$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Gagal','Proses Lambat! Ulangi lagi','error')</script>");
-		redirect('admin/users/update');
+		redirect('admin/berita/update');
 	}
 
 	public function proses_delete($getId_user = "0")
 	{
-		// cek id user
-		$cek = $this->Musers->cekId($getId_user);
-		if ($getId_user == "0" || count($cek) == 0) {
-			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Id Tidak ditemukan','error')</script>");
-			redirect('admin/users');
-			exit();
-		}
-
-		if ($this->Musers->delete('tabel_user', $getId_user)) {
-			// membuat notifikasi sementara
-			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Berhasil','Hapus Data Berhasil','success')</script>");
-			redirect('admin/users');
-			exit();
-		}
-
-		// membuat notifikasi sementara
-		$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Gagal','Proses Lambat! Ulangi lagi','error')</script>");
-		redirect('admin/users');
 	}
 }

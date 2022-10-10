@@ -34,8 +34,8 @@
                                 <div class="form-row">
                                     <div class="col-md-6">
                                         <div class="form-group col-md-12">
-                                            <label for="">Id Berita</label>
-                                            <input value="<?= $tanggal ?>" maxlength="25" name="id" type="text"
+                                            <label for="id_berita">Id Berita</label>
+                                            <input value="<?= $id_berita ?>" maxlength="25" name="id_berita" type="text"
                                                 class="form-control" placeholder="Id Berita Otomatis dibuat Sistem"
                                                 readonly>
                                         </div>
@@ -51,9 +51,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group col-md-12">
-                                            <label for="gambar">Gambar*</label>
+                                            <label for="gambar">Gambar</label>
                                             <input type="file" class="form-control" id="gambar" name="gambar"
-                                                placeholder="Upload Gambar" required>
+                                                placeholder="Upload Gambar">
                                             <div class="">*kosongi gambar jika tidak dirubah</div>
                                             <img style="max-height: 200px;" class="img-fluid"
                                                 src="<?= base_url('upload/berita/' . $gambar); ?>"
