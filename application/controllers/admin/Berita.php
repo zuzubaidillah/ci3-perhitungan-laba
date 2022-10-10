@@ -63,50 +63,31 @@ class Berita extends CI_Controller
 	public function proses_add()
 	{
 		// menerima inputan dari bagian view
-		$namaDepan = htmlspecialchars($this->input->post('namaDepan'), ENT_QUOTES);
-		$namaBelakang = htmlspecialchars($this->input->post('namaBelakang'), ENT_QUOTES);
-		$u = htmlspecialchars($this->input->post('u'), ENT_QUOTES);
-		$p = htmlspecialchars($this->input->post('p'), ENT_QUOTES);
-		$l = htmlspecialchars($this->input->post('level'), ENT_QUOTES);
+		$tanggal = htmlspecialchars($this->input->post('tanggal'), ENT_QUOTES);
+		$judul = htmlspecialchars($this->input->post('judul'), ENT_QUOTES);
+		$tags = htmlspecialchars($this->input->post('tags'), ENT_QUOTES);
+		$deskripsi_singkat = htmlspecialchars($this->input->post('deskripsi_singkat'), ENT_QUOTES);
+		$isi = $this->input->post('isi');
 
-		// cek username tidak boleh sama
-		$cek = $this->Musers->cekUsername($u);
+		// cek judul
+		// judul jadikan url slug
+		$slug = url_title($judul, 'dash', true);
+
+		// cek judul yang sudah ada sesuai judul
+		$cek = $this->Mberita->cekJudul($judul);
 		if (count($cek) >= 1) {
 			// membuat notifikasi sementara
-			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Username sudah digunakan','error')</script>");
-			redirect('admin/users/add');
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Judul: $judul sudah digunakan','error')</script>");
+			redirect('admin/berita/add');
 			exit();
 		}
 
-		// eckripsi password
-		$passwordEnkripsi = password_hash($p, PASSWORD_DEFAULT);
-		$session_id_user = $this->session->userdata('session_id');
+		// upload gambar
+		$this->proses_upload_gambar();
+	}
 
-		$dataSimpan = [
-			"id_user" => "USE" . mt_rand(10000000000000000, 99999999999999999),
-			"nama_depan" => $namaDepan,
-			"nama_belakang" => $namaBelakang,
-			"username" => $u,
-			"password" => $passwordEnkripsi,
-			"level" => $l,
-		];
-		$dataBintang = [
-			"tgl_buat" => date('Y-m-d H:i:s'),
-			"tgl_update" => "0000-00-00 00:00:00",
-			"id_buat" => $session_id_user,
-			"id_update" => "",
-		];
-		$gabungArray = array_merge($dataSimpan, $dataBintang);
-
-		if ($this->Musers->add('tabel_user', $gabungArray)) {
-			// membuat notifikasi sementara
-			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Berhasil','Tambah Data Berhasil disimpan','success')</script>");
-			redirect('admin/users');
-			exit();
-		}
-		// membuat notifikasi sementara
-		$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Gagal','Proses Lambat! Ulangi lagi','error')</script>");
-		redirect('admin/users/add');
+	private function proses_upload_gambar()
+	{
 	}
 
 	public function proses_update()

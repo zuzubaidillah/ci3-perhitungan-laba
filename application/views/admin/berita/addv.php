@@ -28,7 +28,8 @@
                         <div class="card-body">
                             <a href="<?= base_url(); ?>admin/berita" class="card-link">Lihat Data</a>
 
-                            <form action="<?= base_url(); ?>admin/berita/proses_add" method="post">
+                            <form action="<?= base_url(); ?>admin/berita/proses_add" method="post"
+                                enctype="multipart/form-data">
 
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
@@ -59,8 +60,8 @@
                                         <div class="">*pastikan judul tidak sama dengan data yang sudah tersimpan</div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="tag">Tags*</label>
-                                        <input type="text" class="form-control" id="tag" name="tag"
+                                        <label for="tags">Tags*</label>
+                                        <input type="text" class="form-control" id="tags" name="tags"
                                             placeholder="Masukan tag berita" required>
                                         <div class="">*pastikan setiap beda tag gunakan tanda koma ( , )</div>
                                     </div>
