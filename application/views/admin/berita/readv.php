@@ -33,9 +33,9 @@
                                     <tr>
                                         <th style="width: 10px">#</th>
                                         <th style="width: 40px">Aksi</th>
-                                        <th>Nama Lengkap</th>
-                                        <th>Username</th>
-                                        <th>Level</th>
+                                        <th>Judul</th>
+                                        <th>Dilihat</th>
+                                        <th>Tag</th>
                                         <th>Tgl Dibuat</th>
                                         <th>Tgl DiUpdate</th>
                                         <th>Id Buat</th>
@@ -44,16 +44,21 @@
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if (count($dt)) {
+                                    if (count($dt) >= 1) {
+                                        // jika ada datanya
                                         $nomorUrut = 0;
                                         foreach ($dt as $value) {
                                             // menambahkan nomor urut
                                             $nomorUrut++;
 
-                                            $id_user = $value['id_user'];
-                                            $namaLengkap = $value['nama_depan'] . ' ' . $value['nama_belakang'];
-                                            $username = $value['username'];
-                                            $level = $value['level'];
+                                            $id_berita = $value['id_berita'];
+
+                                            $judul = $value['judul'];
+                                            $judulSlug = url_title($judul, "dash", true);
+                                            $linkJudul = "<a target='_blank' href='" . base_url('berita/' . $judulSlug) . "'>$judul</a>";
+
+                                            $dilihat = $value['dilihat'];
+                                            $tag = $value['tag'];
                                             $tgl_buat = $value['tgl_buat'];
                                             $tgl_update = $value['tgl_update'];
                                             $id_buat = $value['id_buat'];
@@ -62,15 +67,15 @@
                                     <tr>
                                         <td><?= $nomorUrut; ?></td>
                                         <td>
-                                            <a href="<?= base_url() ?>admin/users/update/<?= $id_user; ?>"
+                                            <a href="<?= base_url() ?>admin/users/update/<?= $id_berita; ?>"
                                                 class="btn btn-warning btn-sm">Edit</a>
                                             <button
-                                                onclick="clickHapus('<?= base_url() ?>admin/users/proses_delete/<?= $id_user; ?>')"
+                                                onclick="clickHapus('<?= base_url() ?>admin/users/proses_delete/<?= $id_berita; ?>')"
                                                 class="btn btn-danger btn-sm">Hapus</button>
                                         </td>
-                                        <td><?= $namaLengkap; ?></td>
-                                        <td><?= $username; ?></td>
-                                        <td><?= $level; ?></td>
+                                        <td><?= $linkJudul; ?></td>
+                                        <td><?= $dilihat; ?></td>
+                                        <td><?= $tag; ?></td>
                                         <td><?= $tgl_buat; ?></td>
                                         <td><?= $tgl_update; ?></td>
                                         <td>
