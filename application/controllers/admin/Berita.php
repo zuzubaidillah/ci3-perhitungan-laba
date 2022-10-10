@@ -229,7 +229,30 @@ class Berita extends CI_Controller
 		redirect('admin/berita/update');
 	}
 
-	public function proses_delete($getId_user = "0")
+	public function proses_delete($getId_berita = "0")
 	{
+		// cek id user
+		$cek = $this->Mberita->cekId($getId_berita);
+		if ($getId_berita == "0" || count($cek) == 0) {
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Id Tidak ditemukan','error')</script>");
+			redirect('admin/berita');
+			exit();
+		}
+
+		// proses hapus data di tabel berita
+		if ($this->Mberita->delete($getId_berita)) {
+
+			// gambar lama akan di lakukan hapus dulu
+			array_map('unlink', glob(FCPATH . "/upload/berita/$getId_berita.*"));
+
+			// membuat notifikasi sementara
+			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Berhasil','Hapus Data Berhasil','success')</script>");
+			redirect('admin/berita');
+			exit();
+		}
+
+		// membuat notifikasi sementara
+		$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Gagal','Proses Lambat! Ulangi lagi','error')</script>");
+		redirect('admin/berita');
 	}
 }

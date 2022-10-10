@@ -30,4 +30,11 @@ class Mberita extends CI_Model
 
         return $querySql->result_array();
     }
+
+    public function delete($getId_berita)
+    {
+        $this->db->where('id_berita', $getId_berita);
+        $this->db->delete('tabel_berita');
+        return $this->db->affected_rows(); // 0 atau 1
+    }
 }
