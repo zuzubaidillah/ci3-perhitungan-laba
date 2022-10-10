@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="<?= base_url() ?>assets-admin/plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= base_url() ?>assets-admin/dist/css/adminlte.min.css">
+    <script src="<?= base_url() ?>assets-admin/ckeditor/ckeditor.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini">

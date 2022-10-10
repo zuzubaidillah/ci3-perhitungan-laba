@@ -106,4 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
     idmenu.classList.add('active');
     // idsubmenu.classList.add('active');
 })
+
+var editor = CKEDITOR.replace('isi');
 </script>
