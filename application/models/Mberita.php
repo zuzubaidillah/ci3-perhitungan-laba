@@ -18,4 +18,12 @@ class Mberita extends CI_Model
 
         return $querySql->result_array();
     }
+
+    public function cekId($getIdBerita)
+    {
+        $sql = "SELECT * FROM tabel_berita WHERE id_berita='$getIdBerita'";
+        $querySql = $this->db->query($sql);
+
+        return $querySql->result_array();
+    }
 }

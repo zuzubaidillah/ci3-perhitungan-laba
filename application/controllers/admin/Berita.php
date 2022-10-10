@@ -34,29 +34,20 @@ class Berita extends CI_Controller
 		$this->load->view('admin/footerv');
 	}
 
-	public function update($getId_user = "0")
+	public function update($getIdBerita = "0")
 	{
 		// cek id user
-		$cek = $this->Musers->cekId($getId_user);
-		if ($getId_user == "0" || count($cek) == 0) {
+		$cek = $this->Mberita->cekId($getIdBerita);
+		if ($getIdBerita == "0" || count($cek) == 0) {
 			$this->session->set_flashdata('notifikasi', "<script>Swal.fire('Pemberitahuan','Maaf Id Tidak ditemukan','error')</script>");
-			redirect('admin/users');
+			redirect('admin/berita');
 			exit();
 		}
 
-		$data['id'] = $cek[0]['id_user'];
-		$data['nd'] = $cek[0]['nama_depan'];
-		$data['nb'] = $cek[0]['nama_belakang'];
-		$data['u'] = $cek[0]['username'];
-
-		$level = $cek[0]['level'];
-		$data['kasirChecked'] = $level == 'kasir' ? 'checked' : '';
-		$data['administratorChecked'] = $level == 'administrator' ? 'checked' : '';
-
-		$data['head_title'] = "Edit User Pengguna - Admin";
+		$data['head_title'] = "Edit Berita - Admin";
 
 		$this->load->view('admin/headerv', $data);
-		$this->load->view('admin/users/updatev');
+		$this->load->view('admin/berita/updatev');
 		$this->load->view('admin/footerv');
 	}
 

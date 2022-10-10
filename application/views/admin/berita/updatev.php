@@ -22,52 +22,64 @@
     <div class="content">
         <div class="container-fluid">
             <div class="row justify-content-center">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
 
                     <div class="card card-primary card-outline">
                         <div class="card-body">
                             <a href="<?= base_url(); ?>admin/users" class="card-link">Lihat Data</a>
 
-                            <form action="<?= base_url(); ?>admin/users/proses_update" method="post">
+                            <form action="<?= base_url(); ?>admin/berita/proses_update" method="post"
+                                enctype="multipart/form-data">
 
-                                <div class="form-group">
-                                    <label for="">Id User</label>
-                                    <input name="id" value="<?= $id; ?>" type="text" class="form-control"
-                                        placeholder="Id User Otomatis dibuat Sistem" readonly>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="">Id Berita</label>
+                                        <input maxlength="25" name="id" type="text" class="form-control"
+                                            placeholder="Id Berita Otomatis dibuat Sistem" readonly>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="tanggal">Tanggal*</label>
+                                        <input value="<?= date('Y-m-d') ?>" type="date" class="form-control"
+                                            id="tanggal" name="tanggal" required>
+                                        <div class="">*tanggal jika melebihi <?= date('Y-m-d') ?>, maka ketika di public
+                                            berita
+                                            tidak akan ditampilkan</div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="gambar">Gambar*</label>
+                                        <input type="file" class="form-control" id="gambar" name="gambar"
+                                            placeholder="Upload Gambar" required>
+                                        <div class="">*kosongi gambar jika tidak dirubah</div>
+                                        <img style="max-height: 200px;" class="img-fluid"
+                                            src="<?= base_url('upload/berita/' . $gambar); ?>" alt="<?= $gambar; ?>">
+                                    </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <label for="namaDepan">Nama Depan (mak:10)</label>
-                                        <input value="<?= $nd; ?>" maxlength="10" type="text" class="form-control"
-                                            id="namaDepan" name="nd" placeholder="Masukan nama depan" autofocus
-                                            required>
+                                        <label for="judul">Judul*</label>
+                                        <input maxlength="150" type="text" class="form-control" id="judul" name="judul"
+                                            placeholder="Masukan Judul yang uniq" autofocus required>
+                                        <div class="">*pastikan judul tidak sama dengan data yang sudah tersimpan</div>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="namaBelakang">Nama Belakang</label>
-                                        <input value="<?= $nb; ?>" type="text" class="form-control" id="namaBelakang"
-                                            name="nb" placeholder="Masukan nama depan" required>
+                                        <label for="tags">Tags*</label>
+                                        <input type="text" class="form-control" id="tags" name="tags"
+                                            placeholder="Masukan tag berita" required>
+                                        <div class="">*pastikan setiap beda tag gunakan tanda koma ( , )</div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="u">Username</label>
-                                    <input value="<?= $u; ?>" type="text" class="form-control" id="u" name="u"
-                                        placeholder="Masukan username pastikan tidak boleh sama dengan yang sudah ada"
-                                        required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Level Pengguna</label>
-                                    <div class="form-check">
-                                        <input <?= $administratorChecked; ?> value="administrator"
-                                            class="form-check-input" type="radio" name="level" id="administrator">
-                                        <label class="form-check-label" for="administrator">Administrator</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input <?= $kasirChecked; ?> value="kasir" class="form-check-input" type="radio"
-                                            name="level" id="kasir">
-                                        <label class="form-check-label" for="kasir">Kasir</label>
-                                    </div>
+                                    <label for="deskripsi_singkat">Deskripsi Singkat*</label>
+                                    <textarea maxlength="150" type="text" class="form-control" id="deskripsi_singkat"
+                                        name="deskripsi_singkat"
+                                        placeholder="Deskripsi sama seperti isi, hanya saja lebih singkat"
+                                        required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="isi">Isi*</label>
+                                    <textarea type="text" class="form-control" id="isi" name="isi" required></textarea>
                                 </div>
 
                                 <div class="form-group">

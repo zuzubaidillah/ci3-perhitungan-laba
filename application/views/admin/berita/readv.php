@@ -67,10 +67,10 @@
                                     <tr>
                                         <td><?= $nomorUrut; ?></td>
                                         <td>
-                                            <a href="<?= base_url() ?>admin/users/update/<?= $id_berita; ?>"
+                                            <a href="<?= base_url() ?>admin/berita/update/<?= $id_berita; ?>"
                                                 class="btn btn-warning btn-sm">Edit</a>
                                             <button
-                                                onclick="clickHapus('<?= base_url() ?>admin/users/proses_delete/<?= $id_berita; ?>')"
+                                                onclick="clickHapus('<?= base_url() ?>admin/berita/proses_delete/<?= $id_berita; ?>')"
                                                 class="btn btn-danger btn-sm">Hapus</button>
                                         </td>
                                         <td><?= $linkJudul; ?></td>
