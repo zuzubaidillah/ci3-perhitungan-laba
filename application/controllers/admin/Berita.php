@@ -27,10 +27,10 @@ class Berita extends CI_Controller
 
 	public function add()
 	{
-		$data['head_title'] = "Tambah User Pengguna - Admin";
+		$data['head_title'] = "Tambah Berita - Admin";
 
 		$this->load->view('admin/headerv', $data);
-		$this->load->view('admin/users/addv');
+		$this->load->view('admin/berita/addv');
 		$this->load->view('admin/footerv');
 	}
 
