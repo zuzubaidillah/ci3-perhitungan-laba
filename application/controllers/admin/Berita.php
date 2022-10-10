@@ -83,11 +83,35 @@ class Berita extends CI_Controller
 		}
 
 		// upload gambar
-		$this->proses_upload_gambar();
+		$id = "BER" . mt_rand(10000000000000000, 99999999999999999);
+		$hasil = $this->proses_upload_gambar($id);
+
+		echo "<pre>";
+		var_dump($hasil);
+		die();
 	}
 
-	private function proses_upload_gambar()
+	private function proses_upload_gambar($file_name)
 	{
+		$config['upload_path']          = FCPATH . '/upload/berita/';
+		$config['allowed_types']        = 'jpg|jpeg|png';
+		$config['file_name']            = $file_name;
+		$config['overwrite']            = true; // ketika ada file dengan nama sama maka akan dilakukan replace ditindihi
+		$config['max_size']             = 2024; // 2MB
+
+		$this->load->library('upload', $config);
+
+		// proses uploadnya
+		if ($this->upload->do_upload('gambar')) {
+			// jika berhasil
+			$uploaded_data = $this->upload->data(); // get data yang sudah diupload filenya
+			// $uploaded_data['file_name'] itu digunakan untuk mengambil nilai nama gambarnya
+			return [true, $uploaded_data['file_name']];
+		} else {
+			// jika gagal
+			$data = $this->upload->display_errors();
+			return [false, $data];
+		}
 	}
 
 	public function proses_update()
