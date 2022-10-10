@@ -24,19 +24,41 @@
         <div class="container">
             <div class="row">
 
-                <div class="col-md-6">
-                    <div class="small-box bg-info">
-                        <div class="inner">
-                            <h3>150</h3>
+                <?php
+                if (count($dtBerita) == 0) {
+                    echo '<div class="col-md-12"><div class="card text-center">
+                        <div class="card-header">
+                            Data Masih Kosong
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Menunggu Data diproses</p>
+                            <a href="' . base_url('home') . '" class="btn btn-primary">Go Home</a>
+                        </div>
+                    </div></div>';
+                } else {
+                    foreach ($dtBerita as $value) {
+                        $judul = $value['judul'];
+                        $deskripsi_singkat = $value['deskripsi_singkat'];
+                        $gambar = $value['gambar'];
+                        $judul = $value['judul'];
+                ?>
+                <div class="col-md-3">
 
-                            <p>Ini adalah halaman Berita</p>
+                    <div class="card">
+                        <img class="card-img-top" src="<?= base_url('upload/berita/' . $gambar); ?>"
+                            alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title text-bold mb-3"><?= $judul; ?></h5>
+                            <p class="card-text"><?= $deskripsi_singkat; ?></p>
+                            <a href="#" class="d-flex justify-content-end">
+                                Baca Selengkapnya
+                            </a>
                         </div>
-                        <div class="icon">
-                            <i class="ion ion-bag"></i>
-                        </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
+
                 </div>
+                <?php }
+                } ?>
 
             </div>
             <!-- /.row -->

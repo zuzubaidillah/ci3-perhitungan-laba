@@ -6,6 +6,7 @@ class Berita extends CI_Controller
 	public function index()
 	{
 		$data['head_title'] = "Berita";
+		$data['dtBerita'] = $this->Mberita->getData();
 
 		$this->load->view('public/headerv', $data);
 		$this->load->view('public/beritav');
