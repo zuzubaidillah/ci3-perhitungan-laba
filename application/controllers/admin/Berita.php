@@ -44,6 +44,14 @@ class Berita extends CI_Controller
 			exit();
 		}
 
+		$data['id_berita'] = $cek[0]['id_berita'];
+		$data['judul'] = $cek[0]['judul'];
+		$data['gambar'] = $cek[0]['gambar'];
+		$data['deskripsi_singkat'] = $cek[0]['deskripsi_singkat'];
+		$data['isi'] = $cek[0]['isi'];
+		$data['tags'] = $cek[0]['tag'];
+		$data['tanggal'] = $cek[0]['tanggal'];
+
 		$data['head_title'] = "Edit Berita - Admin";
 
 		$this->load->view('admin/headerv', $data);
